@@ -20,7 +20,7 @@ def loadData(trainPath,testPath):
     test_images = np.multiply(test_images, 1.0 / 255.0)
 
     #if you want to display an image for fun, call the function below
-    #display(train_images[IMAGE_TO_DISPLAY])
+    #display(test_images[IMAGE_TO_DISPLAY])
 
     #------------------------------------------------------#
     labels = trainData.iloc[:,0].values
