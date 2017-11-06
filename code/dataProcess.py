@@ -49,6 +49,8 @@ def labels_to_one_hot(labels):
     return labels_one_hot.astype(np.uint8)
 
 
+
+
 if __name__ == '__main__':
     trainPath = '../data/train.csv'
     testPath = '../data/test.csv'
