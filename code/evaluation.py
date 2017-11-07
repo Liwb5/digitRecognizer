@@ -19,6 +19,7 @@ DROPOUT = 0.7
 BATCH_SIZE = 100
 
 
+
 trainPath = '../data/train.csv'
 testPath = '../data/test.csv'
 train_images, train_labels, test_images = dp.loadData(trainPath, testPath)
@@ -81,31 +82,28 @@ cost = tf.reduce_mean(cross_entropy)
 train_step = tf.train.AdamOptimizer(LEARNING_RATE).minimize(cross_entropy)
 
 
+# evaluation
 # 预测对的个数
 correct_prediction = tf.equal(tf.argmax(prediction,1), tf.argmax(mnist.input_labels,1))
 
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
 
-saver = tf.train.Saver()#to save the model
+saver = tf.train.Saver()#to save the modelevaluation
 
-
-sess = tf.InteractiveSession()  #调用这个函数后面才可以直接使用eval函数。
+#evaluate--------------------------------------------------------------
+sess = tf.InteractiveSession()
 init = tf.global_variables_initializer()
 sess.run(init)
+print('loading model ...')
+saver.restore(sess, '../models/model.tf')
+print('evaluating ...')
 
-for epoch in range(MAX_NUM_EPOCH):
-    avg_cost = 0
-    total_batch = int(train_images.shape[0]/BATCH_SIZE)
-    for i in range(total_batch):
-
-        batch_xs, batch_ys = next_batch(BATCH_SIZE)
-        feed_dict = {mnist.input_images: batch_xs, mnist.input_labels: batch_ys, mnist.keep_prob:DROPOUT }
-        c, _ = sess.run([cost, train_step], feed_dict=feed_dict)
-        avg_cost += c / total_batch
-
-    print('Epoch:', '%04d' % (epoch + 1), 'cost =', '{:.9f}'.format(avg_cost))
-
-print('saving model ...')
-saver.save(sess, '../models/model.tf')
-
-sess.close()
+test_prediction = np.zeros(test_images.shape[0])
+for i in range(0,test_images.shape[0]//BATCH_SIZE):
+    test_prediction[i*BATCH_SIZE : (i+1)*BATCH_SIZE] = predicted_labels.eval(feed_dict={mnist.input_images: test_images[i*BATCH_SIZE : (i+1)*BATCH_SIZE],
+                                                                                mnist.keep_prob: 1.0})
+print('saving prediction ...')
+sample = pd.read_csv('../data/sample_submission.csv')
+sample.Label = test_prediction.astype(int)
+sample.to_csv("../outputs/mySubmission.csv", index=False)
+#evaluate--------------------------------------------------------------
