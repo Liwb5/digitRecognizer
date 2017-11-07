@@ -120,7 +120,7 @@ for i in range(0,test_images.shape[0]//BATCH_SIZE):
 print('saving prediction ...')
 
 sample = pd.read_csv('../data/sample_submission.csv')
-sample.label = test_prediction
+sample.label = test_prediction.astype(int)
 sample.to_csv("../outputs/mySubmission.csv", index=False)
 
 # sess = tf.InteractiveSession()  #调用这个函数后面才可以直接使用eval函数。
