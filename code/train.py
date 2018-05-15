@@ -9,6 +9,7 @@ import matplotlib.cm as cm
 
 import tensorflow as tf
 
+
 #set max number of epoch
 MAX_NUM_EPOCH = 20
 

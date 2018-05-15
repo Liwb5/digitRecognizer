@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import argparse
 import sys
-
+import tensorflow as tf
 
 IMAGE_TO_DISPLAY = 10
 
@@ -73,9 +73,23 @@ if __name__ == '__main__':
     #testPath = '../data/test.csv'
     train_images, train_labels, test_images = loadData(args.trainPath, args.testPath)
     
-    
-
     print(train_images.shape)
     print(test_images.shape)
     print(train_labels.shape)
+    
+    features_placeholder = tf.placeholder(train_images.dtype, train_images.shape)
+    labels_placeholder = tf.placeholder(train_labels.dtype, train_labels.shape)
+    dataset = tf.data.Dataset.from_tensor_slices((features_placeholder, labels_placeholder))
+    dataset = dataset.batch(4).repeat()
+    iterator = dataset.make_initializable_iterator()
+    #iterator = dataset.make_one_shot_iterator()
+    next_element = iterator.get_next()
+   
+    sess = tf.Session()
+    
+    sess.run(iterator.initializer, feed_dict={features_placeholder: train_images,
+                                          labels_placeholder: train_labels})
+    while(1):
+        a,b = sess.run(next_element)
+    print(a.shape, b.shape)
     plt.show()
