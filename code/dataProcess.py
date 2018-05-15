@@ -3,6 +3,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import argparse
+import sys
+
 
 IMAGE_TO_DISPLAY = 10
 
@@ -20,7 +23,7 @@ def loadData(trainPath,testPath):
     test_images = np.multiply(test_images, 1.0 / 255.0)
 
     #if you want to display an image for fun, call the function below
-    #display(test_images[IMAGE_TO_DISPLAY])
+    display(test_images[IMAGE_TO_DISPLAY])
 
     #------------------------------------------------------#
     labels = trainData.iloc[:,0].values
@@ -52,9 +55,25 @@ def labels_to_one_hot(labels):
 
 
 if __name__ == '__main__':
-    trainPath = '../data/train.csv'
-    testPath = '../data/test.csv'
-    train_images, train_labels, test_images = loadData(trainPath, testPath)
+    parser = argparse.ArgumentParser()
+    parser.register('type', 'bool', lambda v:v.lower() == 'true')
+    
+    parser.add_argument(
+        '--trainPath',
+        type = str,
+        help='Direcotory to load train data.')
+    
+    parser.add_argument(
+        '--testPath',
+        type = str,
+        help='Direcotory to load test data.')
+    
+    args, unparsed = parser.parse_known_args()
+    #trainPath = '../data/train.csv'
+    #testPath = '../data/test.csv'
+    train_images, train_labels, test_images = loadData(args.trainPath, args.testPath)
+    
+    
 
     print(train_images.shape)
     print(test_images.shape)
