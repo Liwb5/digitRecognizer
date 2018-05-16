@@ -23,6 +23,9 @@ class MNIST(object):
             weight = self.weight_variable(shape = weight_shape)
             bias = self.bias_variable(shape = bias_shape)
 
+            #inputs: [batch, in_height, in_width, in_channels]
+            #weight(filter): [filter_height, filter_width, in_channels, out_channels]
+            #其实filter的out_channels就是指filter的数量。
             con2d = tf.nn.conv2d(inputs, weight, strides=[1, 1, 1, 1], padding='SAME')
             L_output = activation_func(con2d+bias)
             L_pool = tf.nn.max_pool(L_output, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
