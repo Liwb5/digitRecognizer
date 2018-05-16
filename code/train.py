@@ -93,7 +93,8 @@ saver = tf.train.Saver()#to save the model
 sess = tf.InteractiveSession()  #调用这个函数后面才可以直接使用eval函数。
 init = tf.global_variables_initializer()
 sess.run(init)
-
+print_every = 5
+print_cost = 0
 for epoch in range(MAX_NUM_EPOCH):
     avg_cost = 0
     total_batch = int(train_images.shape[0]/BATCH_SIZE)
@@ -103,10 +104,13 @@ for epoch in range(MAX_NUM_EPOCH):
         feed_dict = {mnist.input_images: batch_xs, mnist.input_labels: batch_ys, mnist.keep_prob:DROPOUT }
         c, _ = sess.run([cost, train_step], feed_dict=feed_dict)
         avg_cost += c / total_batch
+        print_cost += c
+        if (i+1)%print_every == 0:
+            print_cost = print_cost / print_every
+            print('Epoch:', '%04d' % (epoch + 1), '| cost =', '{:.9f}'.format(print_cost))
+            print_cost = 0
 
-    print('Epoch:', '%04d' % (epoch + 1), 'cost =', '{:.9f}'.format(avg_cost))
-
-print('saving model ...')
-saver.save(sess, '../models/model.tf')
+#print('saving model ...')
+#saver.save(sess, '../models/model.tf')
 
 sess.close()
